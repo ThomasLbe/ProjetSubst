@@ -1,0 +1,246 @@
+#navbar{
+	height: 50px;
+	display: grid;
+	grid-template-rows: 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	background-color: #bdacac;
+	text-align: center;
+	border-top: 3px solid red;
+
+}
+
+#navbar img{
+	border: 0px;
+	margin: auto;
+	height: 45px;
+	width: 150px;
+}
+
+a{
+	text-decoration: none;
+	color: black;
+    padding-top: 15px;
+    border-radius: 15px;
+}
+a:hover{
+	background-color: tomato;
+	color: black;
+}
+
+#listeBiens{
+	width: 100%;
+}
+
+.affapropos{
+	color:grey;
+	font-size:115%;
+	margin-left:3%;
+	text-align:left;
+}
+
+h2{
+	margin-left:5%;
+}
+
+.affbiens{
+	text-align:center;
+}
+.affville{
+	color:grey;
+	font-size:175%;
+}
+.afftwitter{
+	text-align:center;
+}
+.affdetails{
+	color:grey;
+	font-size:105%;
+}
+h3{
+	color:grey;
+	margin-right:50%;
+	font-size:185%;
+}
+
+.affpieces{
+	color:tomato;
+	font-size:150%;
+}
+
+
+.affbiens img{
+	width: 35%;
+	
+}
+
+
+
+.ligne{
+  display: grid;
+  grid-template-columns:1fr 1fr;
+}
+
+.ligne p{
+  width: 75%;
+  margin-bottom: 3%;
+  margin-left: 10%;
+  border-radius: 10px;
+  padding: 10px;
+  border: solid 2px ;
+  border-color:red;
+}
+
+.ligne img{
+	width: 100px;
+	border-radius: 10px;
+}
+
+.ligneCompte{
+  display: grid;
+  grid-template-columns:1fr 1fr;
+  border-top: solid 2px black;
+}
+
+.ligneCompte p{
+  width: 75%;
+  margin-bottom: 3%;
+  margin-left: 10%;
+  padding: 10px;
+  color:tomato;
+}
+
+.search{
+	  text-align:center;
+}
+
+h1{
+	color: tomato;
+	text-align: center;
+}
+
+
+tr{
+
+	border: 20px solid white;
+	margin: 50px;
+	background-color: #333;	
+	margin-top: 50px;
+}
+
+
+
+
+
+button{
+	width: 100px;
+	height: 50px;
+	background-color: #333;
+	color: white;
+	border-radius: 5px;
+}
+
+#login{
+	background-color: tomato;
+	width: 40%;
+	border-radius: 15px;
+	margin: auto;
+	padding: 20px;
+}
+
+#formLogin{
+	display: grid;
+	grid-template-rows: 1fr 1fr;
+}
+#user{
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+#user input{
+	width: 90%;
+	height: 30px;
+	border-radius: 15px;
+}
+#mdpp{
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+#mdpp input{
+	width: 90%;
+	height: 30px;
+	border-radius: 15px;
+}
+
+#conx{
+	width: 100px;
+	height: 50px;
+	background-color: #333;
+	color: white;
+	border-radius: 5px;
+	margin-left: 400px;
+	display: block;
+	margin: 0 auto;
+}
+
+.feedback {
+	text-align: center;
+	font-weight: bold;
+	color: white;
+	background: crimson;
+	border-radius: 1em;
+	margin: 1em auto;
+	max-width: 90%;
+	padding: .5em;
+}
+
+#ai{
+	color: tomato;
+	text-align: center;
+}
+
+
+
+.DLT{
+	color: #333;
+	background-color: tomato;
+	border-radius: 15px;
+	width: 50%;
+	margin: auto;
+}
+
+.DLT p{
+	text-align: center;
+}
+
+.DLT input{
+	width: 70px;
+	height: 25px;
+	background-color: #333;
+	color: white;
+	border-radius: 5px;
+}
+
+.addAnn{
+	background-color: tomato;
+	width: 50%;
+	border-radius: 15px;
+	margin: auto;
+}
+
+.addAnn input{
+	border-radius: 15px;
+	height: 30px;
+}
+
+.addd{
+	width: 70px;
+	height: 25px;
+	background-color: #333;
+	color: white;
+	border-radius: 5px;
+}
+
+
+
+
+
