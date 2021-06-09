@@ -8,6 +8,5 @@ interface ClubStorage {
 	public function search($club);
 	public function create(Club $a);
 	public function delete($id);
-	public function update($id, Club $c);
 }
  ?>

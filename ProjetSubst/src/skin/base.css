@@ -1,0 +1,33 @@
+#login{
+	margin-left : 58px;
+}
+#password{
+	margin-left : 4px;
+}
+.img-right{
+	float:right;
+}
+/* On montre le premier texte */
+.text-base{
+   opacity:1;
+}
+/* On cache le second texte */
+.text-hover{
+   display:none;
+}
+/* On fait disparaitre le premier texte au passage de la souris. */
+.button:hover span.text-base{
+   opacity:0;
+}
+/* On fait apparaitre le second texte au passage de la souris. */
+.button:hover span.text-hover{
+   display:inherit;
+   position:absolute;
+}
+th, td {
+    padding: 15px;
+    text-align: left;
+}
+#valider{
+visibility : hidden;
+}

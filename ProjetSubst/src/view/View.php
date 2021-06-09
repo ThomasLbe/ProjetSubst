@@ -18,18 +18,30 @@ class View {
 
 	public function render(){
 			echo "<!DOCTYPE html>
-              <html>
-              <head>
-               <meta charset='UTF-8' />
-               <link href='src/skin/s12.css' rel='stylesheet'>
+				<html>
+				<head>
+				<meta charset='UTF-8' />
+				<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+				<meta name='viewport' content='width=device-width, initial-scale=1'>
+               <!-- Bootstrap Core CSS -->
+				<link href='src/skin/bootstrap.min.css' rel='stylesheet'>
+
+				<!-- Custom CSS -->
+				<link href='src/skin/business-casual.css' rel='stylesheet'>
+
+				<!-- Fonts -->
+				<link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+				<link href='https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
               	<title> Mes équipes </title>
               </head>
               <body>
-              <div id='navbar'> ".$this->navBar()." </div>
+               ".$this->navBar()." 
               ".$this->feedb()."
-              <h1> ".$this->title." </h1>
+              <div class='brand'>".$this->title."</div>
               <p> ".$this->content." </p>
+			  
               </body>
+			  
               </html>";
 		
 		
@@ -43,113 +55,164 @@ class View {
 	}
 
 	public function navBar(){
+		
+		$string='
+		<nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">';
+		
 		if (isset($_SESSION['user'])) {
 			if ($_SESSION['user']->getStatut()=='admin') { //SI UN COMPTE ADMIN EST CONNECTE
-	       	return " <img src='logo.png'> <a href='".$this->router->getAccueilPage()."'> Liste des clubs </a> <a href='".$this->router->getClubCreationURL()."'> Ajouter une équipe </a>  <a href='".$this->router->getMyList()."'> Mes équipes suivi </a> <a href='".$this->router->getGestionComptes()."'> Gestion  </a>  <a href='".$this->router->DeconnexionURL()."'> Deconnexion (".$_SESSION['user']->getlogin().") </a>";
+				$string.= "
+					<li>
+						<a href='".$this->router->getAccueilPage()."'>Clubs</a>
+                    </li>
+                    <li>
+                        <a href='".$this->router->getClubCreationURL()."'>Suggerer une équipe</a>
+                    </li>
+					<li>
+                        <a href='".$this->router->getGestionComptes()."'>Gestion</a>
+                    </li>
+					 <li>
+                        <a href='".$this->router->DeconnexionURL()."'>Deconnexion </a>
+                    </li>";
+			
+			}else{
+				$string.= "
+					<li>
+						<a href='".$this->router->getAccueilPage()."'> Clubs </a>
+					</li> 
+					<li>
+						<a href='".$this->router->getClubCreationURL()."'> Suggerer une équipe </a>
+					</li>  
+					<li>
+						<a href='".$this->router->getMyList()."'>Mes équipes</a>
+					</li>  
+					<li>
+						<a href='".$this->router->DeconnexionURL()."'> Deconnexion </a>
+					</li>";
 			}
-	       	return " <img src='logo.png'> <a href='".$this->router->getAccueilPage()."'> Liste des équipes </a> <a href='".$this->router->getClubCreationURL()."'> Ajouter une équipe </a>  <a href='".$this->router->getMyList()."'> Mes équipes suivi </a>  <a href='".$this->router->DeconnexionURL()."'> Deconnexion (".$_SESSION['user']->getlogin().") </a>";
-	    }
-		return " <img src='logo.png'> <a href='".$this->router->getAccueilPage()."'> Liste des clubs </a> <a href='".$this->router->getInscriptionURL()."'>"." Inscription </a> <a href='".$this->router->getLoginURL()."'> Connexion </a>";
-	}
-
-	public function makeClubPage(Club $Club,$id){
-		$this->title=$Club->getclub()." ";
-		$string="<div class='affClub'> ";
-		$string.="<div class='affville'> Site internet du club : <a href=".$Club->getsite().">".$Club->getsite()."</a></div><br>";
-		$string.="<h1><a class='twitter-timeline' data-lang='fr' data-width='600' data-height='700' href='https://twitter.com/".$Club->gettwitter()."?ref_src=twsrc%5Etfw'></a> <script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script></h1>";
-		
-		
-		$string.="</div>";
-		$this->content=$string;
+		}else{
+			$string.= " 
+				<li>
+					<a href='".$this->router->getAccueilPage()."'> Liste des clubs </a>
+				</li> 
+				<li>
+					<a href='".$this->router->getLoginURL()."'> Connexion </a>
+				</li>";
+		}
+			$string.="</ul></div></div></nav>";
+		return $string;
 	}
 	
-	public function makeClubValidePage($tabClub){ //Affichage des club en attente de validation par l'admin
-		$this->title="Clubs a valider";
-		$string="<h1><a href='".$this->router->getGestionClub()."'>Club a valider</a> | <a href='".$this->router->getGestionComptes()."'>Liste des comptes</a></h1>";
-		if (empty($tabClub)) {
-			$string.="<div>";
-			$string.="<p id='ai'> Aucun club a validé. </p>";
-			$string.='</div>';
+	
+	
+
+	public function makeClubPage(Club $Club,$id){ //AFFICHAGE DETAILS DU CLUB
+		$this->title=$Club->getclub()." ";
+		$string="<div class ='text-center'><a class='btn btn-default btn-lg' href='".$Club->getsite()."'>Site internet </a></div>";
+		
+		$string.="<hr><h2 class='intro-text text-center' ><strong>Twitter du club</strong></h2><hr>";
+		$string.="<h1><div class ='text-center'><a class='twitter-timeline' data-lang='fr' data-width='600' data-height='700' href='https://twitter.com/".$Club->gettwitter()."?ref_src=twsrc%5Etfw'></a> <script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script></h1></div>";
+		
+		/*
+				///////////////////// NE FONCTIONE PAS SUR LE SERVEUR  //////////////////
+		
+		$string.="<hr><h3 class='text-center'><a href='".$this->router->getArticleRMC($id)."'>Articles RMC</a> | <a href='".$this->router->getArticleEquipe($id)."'>Articles L'Equipe</a></h3><hr>";
+		
+		$rssequipe = "https://rmcsport.bfmtv.com/rss/football/"; //ON RECUPERE LE LIEN RSS DE RMC
+		$rssrmc = "https://www6.lequipe.fr/rss/actu_rss_Football.xml"; //ON RECUPERE LE LIEN RSS DE RMC
+		
+		if(!isset($_GET['action'])){$_GET['action']="RMC";}
+		
+		switch($_GET['action']){
+			case 'RMC':
+				$rss_load = simplexml_load_file($rssrmc); //ON RECUPERE LE XML RMC
+				$journal="RMC";
+				break;
 			
-		}else{
-			$i=1;
-		    foreach ($tabClub as $key => $value) {
-		    	$tab[$i]=$value;
+			case 'lequipe':
+				$rss_load = simplexml_load_file($rssequipe); //ON RECUPERE LE XML RMC
+				$journal="L'équipe";
+				break;
 				
-				$idclub[$i]=$key;
-				$i++;
-			}
-			$nbresultats=$i-1;		
-			$c=1;
-			
-			$string.='<h1>'.$nbresultats.' club en attente</h1>';
-			$string.='<div class="ligne">';
-			$string.='<p>Sport</p><p>Club</p>';
-			$string.='</div>';
-			
-			
-			while($c<=$nbresultats){
-				$string.='<div class="ligneCompte">';
-				$string.='<p>'.$tab[$c]->get_sport().'</p>';
-				$string.='<p>'.$tab[$c]->getclub().'</p>';
-				$string.="<form method='post' action='".$this->router->getClubDeletionURL($idclub[$c])."''>";
-				$string.="Supprimer le club  ";
-				$string.="<input type='submit' value='Supprimer'> <br>";
-				$string.="</form>";
-				$string.="<form method='post' action='".$this->router->getValideClubURL($idclub[$c])."''>";
-				$string.="Valider le club  ";
-				$string.="<input type='submit' value='Valider'> <br>";
-				$string.="</form>";
-				$string.="<br>";
-				$string.="<br>";
-				$string.='</div>';
-				$c++;	
-			}
 			
 		}
+		
+		$article=0;
+		$string.="<hr><h2 class='intro-text text-center' >Articles <strong>".$journal."</strong></h2><hr>";
+		foreach ($rss_load->channel->item as $item) {
+			
+			$nomclub=strtolower($Club->getclub());
+			if(strpos($item->link,$nomclub)){ //ON VERIFIE SI ON A UN ARTICLE DU CLUB, TEST SUR LE LIEN CAR ERREUR SUR LE TITRE
+				$image=$item->enclosure['url'];
+				$article=1; //COMPTEUR POUR SAVOIR SI ON A AU MOINS 1 ARTICLE
+				$string.= '<div class="col-sm-4 text-center">
+							<h5 class="intro-text "><strong>'.$item->title.' </strong></h5>
+							<img width="350" height="200" src="'.$image.'"><br>
+							<a class="btn btn-default btn-lg" href="'.$item->link.'">Article </a><hr></div>';
+			}
+            
+          }
+		  if($article==0){
+			  $string.="<h3 class='text-center'> Aucun article. </h3>";
+		  }
+		  */
+		
 		$this->content=$string;
 	}
 	
-	public function makeComptePage($tabCompte){ //Affichage des comptes utilisateur pour l'admin
+	
+	public function makeValidationPage($tab){ //Affichage des comptes utilisateur et club a vérifier pour l'admin
 		$this->title="Liste des comptes";
-		$string="<h1><a href='".$this->router->getGestionClub()."'>Club a valider</a> | <a href='".$this->router->getGestionComptes()."'>Liste des comptes</a></h1>";
-		if (empty($tabCompte)) {
+		
+		$test=$_GET['action']; //Recupere si on affiche liste des club ou liste des comptes
+		
+		$this->title= ($test=="gestion")? "Liste des comptes" : "Liste des clubs";
+		
+		$string="<hr><h3 class='text-center'><a href='".$this->router->getGestionClub()."'>Club a valider</a> | <a href='".$this->router->getGestionComptes()."'>Liste des comptes</a></h3><hr>";
+		if (empty($tab)) {
 			$string.="<div>";
-			$string.="<p id='ai'> Aucun compte. </p>";
+			$string.= ($test=="gestion")?"<div class='text-center'><h3> Aucun compte. </h3></div>":"<div class='text-center'><h3> Aucun club a valider. </h3></div>"; //Gestion = on affiche les comptes sinon les clubs
 			$string.='</div>';
 			
 		}else{
 			$i=1;
-		    foreach ($tabCompte as $key => $value) {
+		    foreach ($tab as $key => $value) {
 		    	$tab[$i]=$value;
 				
-				$idcompte[$i]=$key;
+				$id[$i]=$key;
 				$i++;
 			}
 			$nbresultats=$i-1;		
 			$c=1;
 			
-			$string.='<h1>'.$nbresultats.' comptes inscrits</h1>';
-			$string.='<div class="ligne">';
-			$string.='<p>Nom</p><p>Login</p>';
-			$string.='</div>';
+			$string.= ($test=="gestion")? '<div class="text-center"><h3>'.$nbresultats.' comptes inscrits</h"></div>':'<div class="text-center"><h3>'.$nbresultats.' club en attente</h3></div>';
+			
 			
 			
 			while($c<=$nbresultats){
-				$string.='<div class="ligneCompte">';
-				$string.='<p>'.$tab[$c]->getnom().'</p>';
-				$string.='<p>'.$tab[$c]->getlogin().'</p>';
-				$string.="<form method='post' action='".$this->router->getCompteDeletionURL($tab[$c]->getlogin())."''>";
-				$string.="Supprimer le compte  ";
-				$string.="<input type='submit' value='Supprimer'> <br>";
-				$string.="</form>";
-				$string.="<form method='post' action='".$this->router->getPromCompteURL($tab[$c]->getlogin())."''>";
-				$string.="Promouvoir le compte  ";
-				$string.="<input type='submit' value='Pormouvoir'> <br>";
-				$string.="</form>";
-				$string.="<br>";
-				$string.="<br>";
-				$string.='</div>';
+				
+				if($test=="gestionclub"){
+					$string.= '<div class="col-sm-4 text-center">
+								<h5 class="intro-text "><strong>'.$tab[$c]->getclub().' </strong></h5>
+								<img  src="'.$tab[$c]->getimage().'" width="200" height="150" alt="">
+								<h5 class="intro-text "><strong>Catégorie : '.$tab[$c]->get_sport().' </strong></h5>';
+					$string.='<a class="btn btn-default btn-lg" href="'.$this->router->getClubDeletionURL($id[$c]).'">Supprimer </a>';			
+					$string.='<a class="btn btn-default btn-lg" href="'.$this->router->getValideClubURL($id[$c]).'">Valider </a>';			
+					$string.='</div>';	
+				}					
+							
+				if($test=="gestion"){
+					$string.= '<div class="col-sm-4 text-center">
+								<h5 class="intro-text ">Nom :<strong>'.$tab[$c]->getnom().' </strong></h5>
+								<h5 class="intro-text ">Login :<strong>'.$tab[$c]->getlogin().' </strong></h5>';
+								$string.='<a class="btn btn-default btn-lg" href="'.$this->router->getCompteDeletionURL($tab[$c]->getlogin()).'">Supprimer </a>';			
+					$string.='<a class="btn btn-default btn-lg" href="'.$this->router->getPromCompteURL($tab[$c]->getlogin()).'">Promouvoir </a>';			
+					$string.='</div>';
+								
+				}
 				$c++;	
 			}
 			
@@ -180,27 +243,23 @@ class View {
 	
 	
 	//AFFICHAGE EN EN LIGNE DE 2 ITEM
-	public function makeListPage($tabClubs){ //Affichage de la liste de tous les Club
+	public function makeListPage($tabClubs){ //Affichage de la liste de tous les Club		
+		$string="<hr><h2 class='intro-text text-center' >Liste des <strong>clubs</strong></h2><hr>
 		
-		$this->title='Club';
-		
-		$string="<form method='post' action='".$this->router->getSearchURL()."''>";
-			$string.="<div class='search'> ";
-			$string.="Rechercher un club : <input type='text' name='club' >";
-			$string.="<input type='submit' value='Rechercher'> <br>";
-			$string.="</div>";
-		$string.="</form>";
+				<br><form method='post' class='text-center' action='".$this->router->getSearchURL()."''>
+					<div class='search'> 
+						Rechercher un club : <input type='text' name='club' >
+						<input type='submit' value='Rechercher'> <br>
+						</div>
+				</form><br>";
 		
 			
 		if (empty($tabClubs)) {
 			
-			$string.="<div>";
-			$string.="<p id='ai'> Aucun club. </p>";
-			$string.='</div>';
+			$string.="<br><br><br><h3 class='text-center'> Aucun club. </h3>";
 			
 		}else{			
 			
-		    $string.="<div id='listeClub'>";
 			$i=1;
 			$c=1;
 			$cat=[];
@@ -228,7 +287,7 @@ class View {
 			}
 			$nbresultats=$i-1;
 			 //LISTE DEROULANTE CATEGORIE SPORT
-			$string.="<form method='POST' action='".$this->router->getListURL()."'>";
+			$string.="<form method='POST' class='text-center' action='".$this->router->getListURL()."'>";
 			$string.="Choisir un sport:</label>";
 				$string.="<select name='categorie' id='categorie'>";
 					$string.="<option value='tous'>Afficher tous</option>";
@@ -238,53 +297,41 @@ class View {
 					
 				$string.="</select>";
 				$string.="<input type='submit'/>";
-			$string.="</form>";
+			$string.="</form><br><br>";
 			
 			$c=1;
 			while($c<=$nbresultats){
-				$string.='<div class="ligne">';
-				if (isset($_SESSION['user'])) { //SI ON EST CONNECTER ON AFFICHE LE BOUTON SUIVRE
-					if ($_SESSION['user']->getStatut()=='admin') {
-							$string.='<p>'.$tab[$c]->get_sport().'<b> '.$tab[$c]->getclub().'  <br><img src="'.$tab[$c]->getimage().'"> </b><br><a href="'.$this->router->getClubURL($idClub[$c]).'"> <button> Détails </button> </a><a href="'.$this->router->getClubDeletionURL($idClub[$c]).'"> <button> Supprimer </button> </a> </p>';
-						}else{
-							$string.='<p>'.$tab[$c]->get_sport().'<b> '.$tab[$c]->getclub().'  <br><img src="'.$tab[$c]->getimage().'"> </b><br><a href="'.$this->router->getClubURL($idClub[$c]).'"> <button> Détails </button> </a><a href="'.$this->router->getSuivreURL($idClub[$c]).'"> <button> Suivre </button> </a> </p>';
-						}
-				}else{
-					$string.='<p>'.$tab[$c]->get_sport().'<b><br> '.$tab[$c]->getclub().'   <br><img src="'.$tab[$c]->getimage().'"> </b></p>';
+				
+				$string.= '<div class="col-sm-4 text-center">
+							<h5 class="intro-text "><strong>'.$tab[$c]->getclub().' </strong></h5>
+							<img  src="'.$tab[$c]->getimage().'" width="200" height="150" alt="">
+							<h5 class="intro-text "><strong>Catégorie : '.$tab[$c]->get_sport().' </strong></h5>';
+				if (isset($_SESSION['user'])) { //SI ON EST CONNECTER ON AFFICHE LE BOUTON DETAILS
+					$string.='<a class="btn btn-default btn-lg" href="'.$this->router->getClubURL($idClub[$c]).'">Details </a>';
+					if ($_SESSION['user']->getStatut()=='admin') {//SI ON EST CONNECTER EN ADMIN BOUTON SUPPRIMER
+						$string.='<a class="btn btn-default btn-lg" href="'.$this->router->getClubDeletionURL($idClub[$c]).'">Supprimer </a>';
+					}else{ //SI ON EST PAS ADMIN BOUTON SUIVRE
+						$string.='<a class="btn btn-default btn-lg" href="'.$this->router->getSuivreURL($idClub[$c]).'">Suivre </a>';
+					}
 				}
-				$c++;
-				if($c<=$nbresultats){ //Si on a un nombre d'annonces impaires 
-					if (isset($_SESSION['user'])) { //SI ON EST CONNECTER ON AFFICHE LE BOUTON SUIVRE
-					if ($_SESSION['user']->getStatut()=='admin') {
-							$string.='<p>'.$tab[$c]->get_sport().'<b> '.$tab[$c]->getclub().'    <br><img src="'.$tab[$c]->getimage().'">  </b><br><a href="'.$this->router->getClubURL($idClub[$c]).'"> <button> Détails </button> </a><a href="'.$this->router->getClubDeletionURL($idClub[$c]).'"> <button> Supprimer </button> </a> </p>';
-						}else{
-							$string.='<p>'.$tab[$c]->get_sport().'<b> '.$tab[$c]->getclub().'   <br><img src="'.$tab[$c]->getimage().'"> </b><br><a href="'.$this->router->getClubURL($idClub[$c]).'"> <button> Détails </button> </a><a href="'.$this->router->getSuivreURL($idClub[$c]).'"> <button> Suivre </button> </a> </p>';
-						}
-				}else{
-					$string.='<p>'.$tab[$c]->get_sport().'<b><br> '.$tab[$c]->getclub().'   <br><img src="'.$tab[$c]->getimage().'">  </b></p>';
-				}
-				}
-				$c++;
 				$string.='</div>';
+				$c++;
+				
 			}
-			$string.='</div>';
 			
 		}
 		$this->content=$string;
 	}
 	
 	public function makeMyListPage($tabClubs){ //Affichage de la liste des Club suivi par une personne
-		$this->title='Club';	
-		$string='';		
+		$string="<hr><h2 class='intro-text text-center' >Liste des <strong>clubs suivi</strong></h2><hr>";
+			
 		if (empty($tabClubs)) {
 			
-			$string.="<div>";
-			$string.="<p id='ai'> Aucun club suivi. </p>";
-			$string.='</div>';
+			$string.="<br><br><br><h3 class='text-center'> Aucun club suivi. </h3>";
 			
 		}else{			
 			
-		    $string.="<div id='listeClub'>";
 			$i=1;
 		    foreach ($tabClubs as $key => $value) {
 		    	$tab[$i]=$value;
@@ -298,18 +345,16 @@ class View {
 			
 			
 			while($c<=$nbresultats){
-				$string.='<div class="ligne">';
 				
-				$string.='<p>'.$tab[$c]->get_sport().'<b> '.$tab[$c]->getclub().'  <br><img src="'.$tab[$c]->getimage().'"> </b><br><a href="'.$this->router->getClubURL($idClub[$c]).'"> <button> Détails </button> </a> </p>';
-
-				$c++;
-				if($c<=$nbresultats){ //Si on a un nombre d'annonces impaires 
-					$string.='<p>'.$tab[$c]->get_sport().'<b> '.$tab[$c]->getclub().' <br><img src="'.$tab[$c]->getimage().'"> </b><br><a href="'.$this->router->getClubURL($idClub[$c]).'"> <button> Détails </button> </a> </p>';
-				}
-				$c++;
+				$string.= '<div class="col-sm-4 text-center">
+							<h5 class="intro-text "><strong>'.$tab[$c]->getclub().' </strong></h5>
+							<img  src="'.$tab[$c]->getimage().'" width="200" height="150" alt="">
+							<h5 class="intro-text "><strong>Catégorie : '.$tab[$c]->get_sport().' </strong></h5>
+							<a class="btn btn-default btn-lg" href="'.$this->router->getClubURL($idClub[$c]).'">Details </a>
+							<a class="btn btn-default btn-lg" href="'.$this->router->getUnfollowURL($idClub[$c]).'">Unfollow </a>';
 				$string.='</div>';
+				$c++;
 			}
-			$string.='</div>';
 			
 		}
 		$this->content=$string;
@@ -334,46 +379,44 @@ class View {
 			$siteE=key_exists('site', $erreur) ? $erreur['site'] :'';
 			$imageE=key_exists('image', $erreur) ? $erreur['image'] :'';
 		}
-		$this->title="Ajout d'un club";
-		$string="";
-		$string.="<form method='post' class='addAnn' enctype='multipart/form-data'  action='".$this->router->getClubSaveURL()."'>";
-		$string.="Sport : <input type='text' name='sport' value=".$sport."> ".$sportE." <br>";
-		$string.="Nom du club : <input type='text' name='club' value=".$club."> ".$clubE." <br>";
-		$string.="Compte Twitter : <input type='text' name='twitter' value=".$twitter."> ".$twitterE." <br>";
-		$string.="Site internet : <input type='text' name='site' value=".$site."> ".$siteE." <br>";
-		$string.="Image : <input type='file' name='image' value=".$image."> ".$imageE." <br>";
-		$string.="<input type='submit' value='Valider'> <br>";
+		$string="<hr><h2 class='intro-text text-center' >Ajjout d'un <strong>club</strong></h2><hr>";
+		
+		
+		$string.="<form method='post' id='lg-form' name='lg-form' enctype='multipart/form-data'  action='".$this->router->getClubSaveURL()."'>";
+		
+					$string.="<div class='form-group col-lg-4'>";
+						$string.="<label for='sport'>Sport :</label>";
+						$string.="<input type='text' name='sport' class='form-control' placeholder='Sport' value=".$sport.">".$sportE;
+					$string.="</div>";
+					
+					$string.="<div class='form-group col-lg-4'>";
+						$string.="<label for='club'>Club :</label>";
+						$string.="<input type='text' name='club' class='form-control' placeholder='Club' value=".$club.">".$clubE;
+					$string.="</div>";
+					
+					$string.="<div class='form-group col-lg-4'>";
+						$string.="<label for='twitter'>Compte Twitter :</label>";
+						$string.="<input type='text' name='twitter' class='form-control' placeholder='Twitter' value=".$twitter.">".$twitterE;
+					$string.="</div>";
+					
+					$string.="<div class='form-group col-lg-4'>";
+						$string.="<label for='site'>Site internet :</label>";
+						$string.="<input type='text' name='site' class='form-control' placeholder='Site internet' value=".$site.">".$siteE;
+					$string.="</div>";
+					
+					$string.="<div class='form-group col-lg-4'>";
+						$string.="<label for='image'>Image :</label>";
+						$string.="<input type='file' name='image' class='form-control' value=".$image.">".$imageE;
+					$string.="</div>";
+					
+					$string.="<div class=' col-lg-12 text-center'>";
+						$string.="<input class='btn btn-default btn-lg' type='submit' value='Valider'> <br>";
+					$string.="</div>";
 		$string.="</form>";
 		$this->content=$string;
 	}
 
-	public function makeClubModificationPage(ClubBuilder $ClubBuilder,$id){
-	    $data=$ClubBuilder->getData();
-		$erreur=$ClubBuilder->getError();
-		if ($data===null) {
-			$sport=''; $club=''; $twitter=''; $site='';
-		}else{
-			$sport=key_exists('sport', $data) ? $data['sport'] : ''; 
-			$club=key_exists('club', $data) ? $data['club'] :'';
-			$twitter=key_exists('twitter', $data) ? $data['twitter'] : '';
-			$site=key_exists('site', $data) ? $data['site'] :'';
-			
-			$sportE=key_exists('sport', $erreur) ? $erreur['sport'] : ''; 
-			$clubE=key_exists('club', $erreur) ? $erreur['club'] :'';
-			$twitterE=key_exists('twitter', $erreur) ? $erreur['twitter'] : '';
-			$siteE=key_exists('site', $erreur) ? $erreur['site'] :'';
-		}
-		$this->title='Modification annonce';
-		$string="";
-		$string.="<form method='post' class='addClub' enctype='multipart/form-data' action='".$this->router->getClubSaveEditURL($id)."'>";
-		$string.="Type : <input type='text' name='type' value=".$type."> ".$typeE." <br>";
-		$string.="Nombre de pièces : <input type='number' name='nbpieces' value=".$nbpieces."> ".$nbpiecesE." <br>";
-		$string.="Surface : <input type='number' name='surface' value=".$surface."> ".$surfaceE." <br>";
-		$string.="Prix : <input type='number' name='prix' value=".$prix."> ".$prixE." <br>";
-		$string.="<input type='submit' value='Modifier'> <br>";
-		$string.="</form>";
-		$this->content=$string;
-	}
+	
 
 	public function makeDebugPage($variable) {
 	$this->title = 'Debug';
@@ -398,14 +441,6 @@ class View {
 
 	public function makeNotCreatedPage() {
 		$this->router->POSTredirect($this->router->getInscriptionURL(), "Erreur lors de la saisie !");
-	}
-
-	public function makeClubEditedPage($id) {
-		$this->router->POSTredirect($this->router->getClubURL($id), "Le club a bien été modifié !");
-	}
-
-	public function makeClubNotEditedPage($id) {
-		$this->router->POSTredirect($this->router->getClubEditURL($id), "Erreur lors de la saisie !");
 	}
 
 	public function makeClubDeletedPage() {
@@ -444,14 +479,26 @@ class View {
 	}
 
 	public function makeLoginFormPage(){
-		$string="<form id='login' method='post' action='".$this->router->getCheckURL()."'>";
-		$string.="<div id='formLogin'>";
-		$string.="<div id='user'> <p> Login </p> <input type='text' name='login'> </div>";
-		$string.="<div id='mdpp'> <p> Mot de passe </p> <input type='password' name='pass'> </div>";
-		$string.="</div>";
-		$string.="<input id='conx' type='submit' value='Connexion'> <br>";
+		$string="<hr><h2 class='intro-text text-center' ><strong>Connexion</strong></h2><hr>";
+		$string.="<div class='col-lg-12 text-center'>";
+		$string.="<form class='text-center'  id='lg-form' name='lg-form' method='post' action='".$this->router->getCheckURL()."'>";
+				$string.="<div>";
+					$string.="<label for='login'>Login :</label>";
+					$string.="<input type='text' name='login' id='login' placeholder='Login'/>";
+				$string.="</div>";
+				
+				$string.="<div>";
+					$string.="<label for='password'>Mot de passe :</label>";
+					$string.="<input type='password' name='pass' id='password' placeholder='Mot de passe' />";
+				$string.="</div>";
+				
+			$string.="<br><button type='submit' id='login' name='valid' value='Valider' class='btn btn-default btn-lg'>Valider</button>";
+			$string.=" <a href='".$this->router->getInscriptionURL()."' class='btn btn-default btn-lg'>Inscription</a>";
 		$string.="</form>";
-		$this->title="Login page";
+		$string.="<hr>";
+		$string.="</div>";
+		
+		
 		$this->content=$string;
 	}
 
@@ -471,14 +518,18 @@ class View {
 		$passE=key_exists('pass', $erreur) ? $erreur['pass'] : ''; 
 		}
 		
+		$string="<hr><h2 class='intro-text text-center' ><strong>Inscription</strong></h2><hr>";
 		
-		$string="<form  class='addAnn' method='post' action='".$this->router->getSaveUserURL()."'>";
-		$string.="Nom : <input type='text' name='nom' value='".$nom."'> ".$nomE." <br>";
-		$string.="Login : <input type='text' name='login' value='".$login."'> ".$loginE." <br>";
-		$string.="Mot de passe : <input type='password' name='pass'> ".$passE." <br>";
-		$string.="<input type='submit' class='addd' value='Valider'> <br>";
+		$string.="<form  class='text-center'  id='lg-form' name='lg-form' method='post' action='".$this->router->getSaveUserURL()."'>";
+		$string.="<label for='nom'>Nom :</label>";
+		$string.="<input type='text' name='nom' placeholder='Nom' value='".$nom."'> ".$nomE." <br>";
+		$string.="<label for='login'>Login :</label>";
+		$string.="<input type='text' name='login' placeholder='Login' value='".$login."'> ".$loginE." <br>";
+		$string.="<label for='password'>Mot de passe :</label>";
+		$string.="<input type='password' placeholder='Mot de passe' name='pass'> ".$passE." <br>";
+		$string.="<input type='submit' class='btn btn-default btn-lg' value='Valider'> <br>";
 		$string.="</form>";
-		$this->title="Inscription";
+		$string.="<hr>";
 		$this->content=$string;
 	}
 

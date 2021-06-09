@@ -132,6 +132,14 @@ class Router {
 					$Controller->valideclub($clubID);
 					break;
 					
+				case 'RMC':
+					$Controller->showInformation($clubID);
+					break;
+					
+				case 'lequipe':
+					$Controller->showInformation($clubID);
+					break;
+					
 				
 					
 				case 'gestion':
@@ -140,6 +148,10 @@ class Router {
 					
 				case 'suivre';
 					$Controller->SuivreClub($clubID);
+					break;
+					
+				case 'unfollow';
+					$Controller->UnfollowClub($clubID);
 					break;
 					
 				case 'gestionclub':
@@ -227,6 +239,14 @@ class Router {
 		return '?action=gestionclub';
 	}
 	
+	public function getArticleRMC($id){
+		return '?action=RMC&amp;club='.$id;
+	}
+	
+	public function getArticleEquipe($id){
+		return '?action=lequipe&amp;club='.$id;
+	}
+	
 	public function getAProposURL(){
 		return '?action=apropos';
 	}
@@ -259,6 +279,10 @@ class Router {
 	
 	public function getSuivreURL($id){
 		return '?action=suivre&amp;club='.$id;
+	}
+	
+	public function getUnfollowURL($id){
+		return '?action=unfollow&amp;club='.$id;
 	}
 	
 	public function getCompteDeletionURL($id){

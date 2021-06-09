@@ -73,6 +73,18 @@ class FollowStorageMySQL implements FollowStorage {
         return $this->connexion->lastInsertId();
         
 	}
+	
+	public function unfollow($id,$user){
+		$rq = "DELETE FROM follow WHERE user=:user AND club=:club";
+		$stmt = $this->connexion->prepare($rq);
+		$data = array(
+         ':user' => $user,
+         ':club' => $id,
+        );
+        $stmt->execute($data);
+        return $this->connexion->lastInsertId();
+        
+	}
 
 	public function hydrate($stmt){
 		$tab=[];

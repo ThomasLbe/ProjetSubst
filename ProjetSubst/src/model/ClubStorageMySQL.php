@@ -68,15 +68,6 @@ class ClubStorageMySQL implements ClubStorage {
         return $this->hydrate($stmt);
 	}
 	
-	/*public function search($club){
-		$rq = "SELECT * FROM club WHERE club LIKE '% :club %'";
-		$stmt = $this->connexion->prepare($rq);
-		$data = array(
-         ':club' => $club,
-        );
-		$stmt->execute($data);
-		return $this->hydrate($stmt);
-	}*/
 
 	public function create(Club $b){
 		$rq = "INSERT INTO club (sport,club,twitter,site,image,valide) VALUES (:sport,:club,:twitter,:site,:image,0)";
@@ -129,20 +120,6 @@ class ClubStorageMySQL implements ClubStorage {
 		return $rs;
 	}
 
-	public function update($id, club $b){
-		$rq = "UPDATE club SET sport= :sport, club= :club, twitter= :twitter, site= :site WHERE id= :id";
-		$stmt = $this->connexion->prepare($rq);
-		$stmt ->bindValue(':sport',$b->get_type(),PDO::PARAM_STR);
-		$stmt ->bindValue(':club',$b->getnbpieces(),PDO::PARAM_STR);
-		$stmt ->bindValue(':twitter',$b->getsurface(),PDO::PARAM_STR);
-		$stmt ->bindValue(':site',$b->getPrix(),PDO::PARAM_STR);
-		$stmt ->bindValue(':id',$id,PDO::PARAM_STR);
-        if ($stmt->execute()) {
-        	return true;
-        }else{
-        	return false;
-        }
-	}
 
 }
 

@@ -58,21 +58,27 @@ class Controller {
     }
 	
 	public function showListCompte(){
-    	$this->view->makeComptePage($this->CompteStorage->readAll());
+    	$this->view->makeValidationPage($this->CompteStorage->readAll());
     }
 	
 	public function showClubValide(){
-    	$this->view->makeClubValidePage($this->ClubStorage->readAllValide());
+    	$this->view->makeValidationPage($this->ClubStorage->readAllValide());
     }
 	
 	public function valideclub($id){
 		$this->ClubStorage->valideclub($id);
-    	$this->view->makeClubValidePage($this->ClubStorage->readAllValide());
+    	$this->view->makeValidationPage($this->ClubStorage->readAllValide());
     }
 	
 	public function SuivreClub($id){
 		$this->FollowStorage->suivre($id,$_SESSION['user']->getlogin());
 		$this->view->makeListPage($this->data);
+	}
+	
+	public function UnfollowClub($id){
+		$this->FollowStorage->unfollow($id,$_SESSION['user']->getlogin());
+		$follow=$this->FollowStorage->readByUser($_SESSION['user']->getlogin());
+		$this->view->makeMyListPage($follow);
 	}
 
     public function showMylist($user){
@@ -166,28 +172,6 @@ class Controller {
             $this->view->makeDeniedPage();
         }
 	}
-	
-	
-	
-    public function modifierClub($id){
-  if($this->ClubStorage->existsClub($id,$_SESSION['user']->getlogin())){
-        /////////////
-                if (key_exists($id, $this->modifiedClubBuilders)) {
-            $this->view->makeClubModificationPage($this->modifiedClubBuilders[$id],$id);
-        }else{
-            $data=$this->ClubStorage->read($id);
-             if ($data) {
-             $tab=$this->transformData($data,$id);
-             $currentClubBuilder= new ClubBuilder($tab);
-             $this->view->makeClubModificationPage($currentClubBuilder,$id);
-             }
-
-        } 
-
-    }else{
-        $this->view->makeDeniedPage();
-    }
-    }
 
     public function transformData($data,$id){
     	$tab=[];
