@@ -116,49 +116,59 @@ class View {
 		$string.="<hr><h2 class='intro-text text-center' ><strong>Twitter du club</strong></h2><hr>";
 		$string.="<h1><div class ='text-center'><a class='twitter-timeline' data-lang='fr' data-width='600' data-height='700' href='https://twitter.com/".$Club->gettwitter()."?ref_src=twsrc%5Etfw'></a> <script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script></h1></div>";
 		
-		/*
+		
 				///////////////////// NE FONCTIONE PAS SUR LE SERVEUR  //////////////////
 		
 		$string.="<hr><h3 class='text-center'><a href='".$this->router->getArticleRMC($id)."'>Articles RMC</a> | <a href='".$this->router->getArticleEquipe($id)."'>Articles L'Equipe</a></h3><hr>";
 		
-		$rssequipe = "https://rmcsport.bfmtv.com/rss/football/"; //ON RECUPERE LE LIEN RSS DE RMC
-		$rssrmc = "https://www6.lequipe.fr/rss/actu_rss_Football.xml"; //ON RECUPERE LE LIEN RSS DE RMC
+		
+		
 		
 		if(!isset($_GET['action'])){$_GET['action']="RMC";}
 		
 		switch($_GET['action']){
 			case 'RMC':
-				$rss_load = simplexml_load_file($rssrmc); //ON RECUPERE LE XML RMC
+				$url ="https://rmcsport.bfmtv.com/rss/football/"; //ON RECUPERE LE XML RMC
 				$journal="RMC";
 				break;
 			
 			case 'lequipe':
-				$rss_load = simplexml_load_file($rssequipe); //ON RECUPERE LE XML RMC
+				$url ="https://www6.lequipe.fr/rss/actu_rss_Football.xml"; //ON RECUPERE LE XML RMC
 				$journal="L'équipe";
 				break;
 				
 			
 		}
 		
+		$proxy = "http://proxy.unicaen.fr:3128";
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_PROXY, $proxy);
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		$data = curl_exec($curl);
+		$rss_load = simplexml_load_string($data);
+		
 		$article=0;
 		$string.="<hr><h2 class='intro-text text-center' >Articles <strong>".$journal."</strong></h2><hr>";
 		foreach ($rss_load->channel->item as $item) {
-			
+						
 			$nomclub=strtolower($Club->getclub());
 			if(strpos($item->link,$nomclub)){ //ON VERIFIE SI ON A UN ARTICLE DU CLUB, TEST SUR LE LIEN CAR ERREUR SUR LE TITRE
+				echo "ZARTZAERAZERR";
 				$image=$item->enclosure['url'];
 				$article=1; //COMPTEUR POUR SAVOIR SI ON A AU MOINS 1 ARTICLE
 				$string.= '<div class="col-sm-4 text-center">
 							<h5 class="intro-text "><strong>'.$item->title.' </strong></h5>
 							<img width="350" height="200" src="'.$image.'"><br>
 							<a class="btn btn-default btn-lg" href="'.$item->link.'">Article </a><hr></div>';
+							
 			}
             
           }
 		  if($article==0){
 			  $string.="<h3 class='text-center'> Aucun article. </h3>";
 		  }
-		  */
+		  
 		
 		$this->content=$string;
 	}
